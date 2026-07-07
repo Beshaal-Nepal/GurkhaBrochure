@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GURKHA SUNGLASS | The Lookbook</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Three.js for 3D Golden Card -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- PageFlip JS for Booklet effect -->
+    <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gurkha: {
+                            green: '#0a1d14',     /* Deep Luxury Green */
+                            greendark: '#050f0a',
+                            greenrich: '#0f2a1d', /* Lifted green for panels */
+                            gold: '#d4af37',
+                            golddark: '#9c7a17',
+                            black: '#000000',
+                            white: '#ffffff',
+                            ink: '#07080a',      /* Near-black page base */
+                            charcoal: '#121317',  /* Elevated surface */
+                            ivory: '#f4efe2',     /* Premium body text */
+                            ivorydim: '#cfc8b6'   /* Secondary text */
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Cinzel', 'serif'],
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --g-ink: #07080a;
+            --g-charcoal: #121317;
+            --g-green: #0a1d14;
+            --g-green-rich: #0f2a1d;
+            --g-ivory: #f4efe2;
+            --g-ivory-dim: #cfc8b6;
+            --g-gold: #d4af37;
+            --g-gold-dark: #9c7a17;
+        }
+
+        body { margin: 0; overflow: hidden; background-color: #030303; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+
+        /* Fine Art Noise Overlay */
+        body::before {
+            content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.035;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        #loader {
+            position: fixed; inset: 0; z-index: 50; background: #030303; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 1s cubic-bezier(0.8, 0, 0.2, 1);
+        }
+        .scan-line { width: 2px; height: 60px; background: #d4af37; animation: scan 1.5s ease-in-out infinite; box-shadow: 0 0 15px #d4af37; }
+        @keyframes scan { 0%, 100% { transform: translateY(-20px); opacity: 0; } 50% { transform: translateY(20px); opacity: 1; } }
+
+        #canvas-container {
+            position: absolute; inset: 0; z-index: 10; transition: opacity 1.2s ease, transform 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+            cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #030303 100%);
+        }
+
+        .tap-to-open { position: absolute; bottom: 12%; z-index: 11; display: flex; flex-direction: column; align-items: center; animation: float 3s ease-in-out infinite; }
+        .mouse-icon { width: 20px; height: 32px; border: 1px solid #d4af37; border-radius: 12px; position: relative; margin-bottom: 12px; }
+        .mouse-wheel { width: 2px; height: 6px; background: #d4af37; position: absolute; top: 6px; left: 50%; transform: translateX(-50%); animation: scroll 2s infinite; border-radius: 2px; }
+
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes scroll { 0% { top: 6px; opacity: 1; } 100% { top: 16px; opacity: 0; } }
+
+        #flipbook-wrapper {
+            position: absolute; inset: 0; z-index: 5; display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 1.5s ease; padding: 20px; overflow: hidden;
+        }
+        #flipbook-wrapper::before { content: ''; position: absolute; inset: 0; background: rgba(3, 3, 3, 0.95); backdrop-filter: blur(20px); }
+
+        /* PAGE BASE — dark editorial */
+        .page {
+            background-color: var(--g-ink);
+            background-image: radial-gradient(140% 100% at 50% 0%, #101513 0%, var(--g-ink) 62%);
+            color: var(--g-ivory);
+            overflow: hidden; position: relative; transform-style: preserve-3d; width: 100%; height: 100%; box-sizing: border-box; display: block;
+        }
+
+        /* Realistic Book Crease */
+        .page::after { content: ''; position: absolute; top: 0; bottom: 0; width: 40px; pointer-events: none; z-index: 40; }
+        .stf__item:nth-child(even) .page::after { right: 0; background: linear-gradient(to left, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 100%); }
+        .stf__item:nth-child(odd) .page::after { left: 0; background: linear-gradient(to right, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 100%); }
+        .stf__item:first-child .page::after, .stf__item:last-child .page::after { display: none; }
+
+        /* Cover Pages */
+        .page.-hard {
+            background: linear-gradient(160deg, #0c2418 0%, #0a1d14 45%, #050f0a 100%) !important;
+            color: white;
+            border: clamp(6px, 2vw, 10px) solid transparent;
+            border-image: linear-gradient(to bottom right, #e7c75a, #9c7a17) 1;
+            box-shadow: inset 0 0 60px rgba(0,0,0,0.55);
+        }
+
+        /* Zero-gap image layout */
+        .page-inner { width: 100%; height: 100%; position: relative; z-index: 2; display: flex; flex-direction: column; overflow: hidden; box-sizing: border-box; }
+
+        /* Strict 50/50 Layouts */
+        .half-img { height: 50%; width: 100%; position: relative; overflow: hidden; }
+        .half-text { height: 50%; width: 100%; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; }
+
+        .full-img { height: 100%; width: 100%; position: relative; overflow: hidden; }
+
+        /* Editorial Typography */
+        .book-h2 { font-size: clamp(1.2rem, 3vw, 2rem); line-height: 1.12; letter-spacing: 0.01em; }
+        .book-h3 { font-size: clamp(0.6rem, 1vw, 0.8rem); letter-spacing: 0.2em; font-weight: 600; text-transform: uppercase; }
+        .book-p {
+            font-family: 'Bahnschrift', 'DIN 1451', 'FF DIN', 'Inter', sans-serif;
+            font-size: clamp(0.7rem, 1.1vw, 0.9rem); line-height: 1.65;
+            color: var(--g-ivory-dim); text-align: justify;
+        }
+
+        .p-fluid { padding: clamp(1.5rem, 3vw, 2.5rem); }
+
+        /* Image Handling */
+        .product-img { width: 100%; height: 100%; object-fit: cover; }
+        .hist-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.18) contrast(1.04) brightness(0.92); }
+
+        /* Dark photo scrim so historical/product images sit in the luxury world */
+        .half-img::after,
+        .img-scrim::after {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.25) 100%);
+        }
+
+        /* ================= GLASSMORPHISM SYSTEM ================= */
+        /* Frosted text panel floating over imagery */
+        .glass {
+            position: relative;
+            background: linear-gradient(135deg, rgba(255,255,255,0.085) 0%, rgba(255,255,255,0.035) 100%);
+            backdrop-filter: blur(18px) saturate(1.25);
+            -webkit-backdrop-filter: blur(18px) saturate(1.25);
+            border: 1px solid rgba(255,255,255,0.16);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.22),
+                inset 0 -1px 0 rgba(0,0,0,0.35),
+                0 18px 50px -20px rgba(0,0,0,0.8);
+            border-radius: clamp(10px, 1.2vw, 16px);
+        }
+        /* Darker variant for panels over bright imagery */
+        .glass-dark {
+            background: linear-gradient(135deg, rgba(10,18,14,0.62) 0%, rgba(7,8,10,0.5) 100%);
+            border: 1px solid rgba(212,175,55,0.22);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.10),
+                0 18px 50px -20px rgba(0,0,0,0.85);
+        }
+        .glass-tight { border-radius: 8px; }
+
+        /* Hairline gold divider */
+        .gold-rule { height: 1px; width: 100%; background: linear-gradient(90deg, transparent 0%, rgba(212,175,55,0.55) 20%, rgba(212,175,55,0.9) 50%, rgba(212,175,55,0.55) 80%, transparent 100%); }
+        .gold-rule-short { height: 1px; width: 60px; background: linear-gradient(90deg, var(--g-gold), rgba(212,175,55,0)); }
+
+        .warranty-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            color: #f4efe2;
+            min-width: 100%;
+        }
+        .warranty-table th,
+        .warranty-table td {
+            padding: 0.9rem 0.8rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .warranty-table th {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #d4af37;
+            vertical-align: top;
+            width: 32%;
+            padding-top: 1rem;
+        }
+        .warranty-table td {
+            font-size: 0.75rem;
+            line-height: 1.6;
+            color: #cfc8b6;
+        }
+        .warranty-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .warranty-note {
+            margin-top: 1rem;
+            font-size: 0.68rem;
+            color: rgba(255,255,255,0.65);
+            line-height: 1.65;
+        }
+
+        /* Gold accent text with subtle shimmer */
+        .text-gold-soft { color: #e7c75a; text-shadow: 0 0 18px rgba(212,175,55,0.18); }
+
+        /* ================= GALLERY STYLES (NEW) ================= */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 20px;
+        }
+        .gallery-item {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 1px solid rgba(212,175,55,0.3);
+            transition: transform 0.3s ease;
+            min-height: 240px;
+        }
+        .gallery-item:hover {
+            transform: translateY(-2px);
+            border-color: var(--g-gold);
+        }
+        .gallery-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            margin-bottom: 8px;
+        }
+        .gallery-title {
+            color: var(--g-charcoal);
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-align: center;
+            letter-spacing: 0.1em;
+        }
+        
+        .shop-btn {
+            background: linear-gradient(135deg, var(--g-gold) 0%, var(--g-gold-dark) 100%);
+            color: var(--g-charcoal);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 0.7rem;
+            box-shadow: 0 4px 15px rgba(212,175,55,0.3);
+            transition: all 0.3s ease;
+        }
+        .shop-btn:hover {
+            box-shadow: 0 6px 20px rgba(212,175,55,0.5);
+            transform: translateY(-1px);
+        }
+
+        /* ================= EYEWEAR BACKGROUND LAYER ================= */
+        .eyewear-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .eyewear-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.40;
+            filter: saturate(0.35) brightness(0.95) contrast(1.05);
+            display: block;
+        }
+        /* Dark vignette so frosted text stays readable */
+        .eyewear-bg::after {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background:
+                linear-gradient(135deg, rgba(7,8,10,0.55) 0%, rgba(7,8,10,0.2) 45%, rgba(7,8,10,0.65) 100%),
+                radial-gradient(120% 100% at 30% 20%, rgba(15,42,29,0.25) 0%, transparent 60%);
+        }
+
+        /* Per-page accent tints */
+        .accent-warm   { --accent: #b87333; } /* copper */
+        .accent-gold   { --accent: #d4af37; } /* gold   */
+        .accent-sage   { --accent: #6f8f6a; } /* sage   */
+        .accent-steel  { --accent: #7d8a96; } /* steel  */
+        .accent-wine   { --accent: #7b3b4a; } /* wine   */
+        .accent-olive  { --accent: #8a8a3f; } /* olive  */
+
+        /* Legacy aliases kept harmless */
+        .page-2-bg, .page-3-bg, .page-4-bg, .page-5-bg, .page-6-bg, .page-7-bg,
+        .page-8-bg, .page-9-bg, .page-10-bg, .page-11-bg, .page-12-bg, .page-13-bg,
+        .page-14-bg, .page-15-bg, .page-16-bg, .page-17-bg, .page-18-bg { background-color: var(--g-ink); }
+
+        .text-field-img-wrapper {
+            position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
+        }
+        .text-field-img-wrapper img {
+            width: 100%; height: 100%; object-fit: cover; opacity: 0.38; filter: saturate(0.35) brightness(0.95); display: block;
+        }
+        .text-field-img-wrapper::after {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background: linear-gradient(135deg, rgba(7,8,10,0.55) 0%, rgba(7,8,10,0.25) 50%, rgba(7,8,10,0.6) 100%);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <h1 id="typewriter" class="font-serif text-gurkha-gold tracking-[0.2em] md:tracking-[0.3em] text-sm md:text-lg uppercase mb-6 text-center px-4 leading-loose" aria-live="polite"></h1>
+        <div class="scan-line mb-6"></div>
+        <h2 class="font-sans text-gurkha-gold tracking-[0.5em] text-[9px] md:text-[10px] uppercase opacity-60">Preparing Lookbook</h2>
+    </div>
+
+    <!-- 3D Canvas Layer -->
+    <div id="canvas-container">
+        <div class="tap-to-open">
+            <div class="mouse-icon"><div class="mouse-wheel"></div></div>
+            <span class="font-serif text-gurkha-gold tracking-[0.3em] text-[10px] uppercase">Tap to Unlock</span>
+        </div>
+    </div>
+
+    <div id="flipbook-wrapper">
+        <div id="book" class="relative z-10 shadow-[0_20px_60px_rgba(0,0,0,0.9)]">
+            
+            <!-- PAGE 1: FRONT COVER -->
+            <div class="page -hard">
+                <div class="page-inner flex flex-col justify-center items-center text-center p-8 bg-gurkha-green relative">
+                    <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(80% 60% at 50% 35%, rgba(212,175,55,0.10) 0%, transparent 70%);"></div>
+                    <p class="font-serif text-[clamp(0.5rem,0.9vw,0.65rem)] tracking-[0.3em] text-gurkha-gold mb-6 uppercase text-center ml-6 text-gold-soft">OFFICIAL LOOKBOOK // 2026</p>
+                    <img src="Golden Logo GURKHA.png" class="w-[85%] mix-blend-screen drop-shadow-2xl relative" alt="Gurkha Logo" onerror="this.style.display='none'">
+                    <h1 class="font-sans text-[clamp(0.6rem,1.5vw,0.8rem)] tracking-[0.5em] text-gurkha-gold mt-12 uppercase text-gold-soft">Premium Eyewear</h1>
+
+                    <div class="absolute bottom-8 left-0 right-0 px-8 flex flex-col items-center">
+                        <div class="gold-rule-short mb-3"></div>
+                        <p class="font-serif text-[clamp(0.7rem,1.2vw,0.9rem)] tracking-[0.3em] text-gurkha-gold uppercase">The Golden Edition</p>
+                        <p class="mt-2 text-[0.6rem] tracking-[0.35em] text-white uppercase">VIP ACCESS Granted</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 2: GURKHA HISTORY 1 (Victoria Cross) -->
+            <div class="page page-2-bg accent-gold">
+                <div class="page-inner">
+                    <div class="half-img img-scrim">
+                        <img src="images/image 1.jpeg" class="hist-img" alt="Victoria Cross Heroes" onerror="this.src='https://placehold.co/600x800/1a1a1a/cfc8b6?text=Victoria+Cross+Heroes'">
+                    </div>
+                    <div class="half-text p-fluid relative !bg-transparent">
+                        <!-- <div class="eyewear-bg"><img src="Glass images/glass1.png" alt="Origins Background Texture" onerror="this.src='https://placehold.co/600x800/000000/333333?text=Origins+Background'"></div> -->
+                        <div class="relative z-10 glass glass-dark p-6 rounded-xl">
+                            <p class="book-h3 text-gurkha-gold mb-2 uppercase tracking-[0.35em]">GURKHA / THE STORY</p>
+                            <h2 class="font-serif book-h2 font-bold text-gurkha-ivory mb-3 uppercase">01 / ORIGINS</h2>
+                            <div class="gold-rule-short mb-3"></div>
+                            <p class="book-p mb-3 font-semibold uppercase tracking-[0.2em] text-gurkha-gold">
+                              SOME NAMES ARE CREATED. SOME NAMES ARE EARNED.
+                            </p>
+                            <p class="book-p">
+                                For generations, Gurkha soldiers have carried the highest honors in the British and Indian armies. Their courage, discipline, and mountain warfare mastery are the foundation of our premium eyewear.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 3: GURKHA HISTORY 2 (The Kukri) -->
+            <div class="page page-3-bg accent-warm">
+                <div class="page-inner">
+                     <div class="half-text p-fluid relative !bg-transparent">
+                        <div class="eyewear-bg"><img src="Glass images/Glass7.jpg" alt="Kukri Blade Shadow Overlay" onerror="this.src='https://placehold.co/600x800/000000/333333?text=Kukri+Shadow+Overlay'"></div>
+                        <div class="relative z-10 glass glass-dark p-6 rounded-xl">
+                            <h3 class="book-h3 text-gurkha-gold mb-2">02 / Lethal Perfection</h3>
+                            <h2 class="font-serif book-h2 font-bold text-gurkha-ivory mb-3 uppercase">The Iconic Blade</h2>
+                            <div class="gold-rule-short mb-3"></div>
+                            <p class="book-p mb-3 font-semibold uppercase tracking-[0.2em] text-gurkha-gold">
+                                THE SHARPEST STATEMENT IN HISTORY
+                            </p>
+                            <p class="book-p">
+                                Armed with their signature forward-curving Kukri, the Gurkhas command respect globally. Our designs draw inspiration from the perfect balance and enduring sharpness of this legendary Nepalese blade.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="half-img img-scrim">
+                        <img src="images/image 8.jpeg" class="hist-img" alt="The Kukri" onerror="this.src='https://placehold.co/600x800/1a1a1a/cfc8b6?text=Kukri+Blade+Close-up'">
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 4: GURKHA HISTORY 3 (Inspection/Discipline) -->
+            <div class="page page-4-bg accent-gold">
+                <div class="page-inner">
+                    <div class="half-img img-scrim">
+                        <img src="images/image 6.jpeg" class="hist-img" alt="Brigade Inspection" onerror="this.src='https://placehold.co/600x800/1a1a1a/cfc8b6?text=Brigade+Inspection'">
+                    </div>
+                    <div class="half-text p-fluid relative !bg-transparent">
+                        <div class="eyewear-bg">
+                            <!-- <img src="Glass images/Glass5.jpg" alt="Military Precision Background" onerror="this.src='https://placehold.co/600x800/000000/333333?text=Precision+Background'"> -->
+                        </div>
+                        <div class="relative z-10 glass glass-dark p-6 rounded-xl">
+                            <h3 class="book-h3 text-gurkha-gold mb-2">03 / Absolute Precision</h3>
+                            <h2 class="font-serif book-h2 font-bold text-gurkha-ivory mb-3 uppercase">Immaculate Detail</h2>
+                            <div class="gold-rule-short mb-3"></div>
+                            <p class="book-p mb-3 font-semibold uppercase tracking-[0.2em] text-gurkha-gold">
+                                CRAFTED FOR THE FEARLESS.
+                            </p>
+                            <p class="book-p">
+                                Soldiers from the Brigade of Gurkhas are renowned for their immaculate turnout and discipline. We mirror this exactitude, ensuring every frame meets the highest military-grade standards.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 5: GURKHA HISTORY 4 (94 Squadron Logistics) -->
+            <div class="page page-5-bg accent-sage">
+                <div class="page-inner">
+                    <div class="half-text p-fluid relative !bg-transparent">
+                        <div class="eyewear-bg"><img src="Glass images/Glass3.jpg" alt="Tactical Logistics Background" onerror="this.src='https://placehold.co/600x800/000000/333333?text=Logistics+Background'"></div>
+                        <div class="relative z-10 glass glass-dark p-6 rounded-xl">
+                            <h3 class="book-h3 text-gurkha-gold mb-2">04 / Tactical Mastery</h3>
+                            <h2 class="font-serif book-h2 font-bold text-gurkha-ivory mb-3 uppercase">Flawless Logistics</h2>
+                            <div class="gold-rule-short mb-3"></div>
+                            <p class="book-p mb-3 font-semibold uppercase tracking-[0.2em] text-gurkha-gold">
+                                PRECISION IN EVERY MOVE.
+                            </p>
+                            <p class="book-p">
+                                Members of the 94 Squadron Queen's Own Gurkha Logistic Regiment demonstrate that strength isn't just in combat, but in flawless execution. We apply this same precision to our craftsmanship.
+                            </p>
+                        </div>
+                    </div>
+                     <div class="half-img img-scrim">
+                        <img src="images/image 3.jpeg" class="hist-img" alt="94 Squadron Logistic" onerror="this.src='https://placehold.co/600x800/2a2a2a/cfc8b6?text=94+Squadron+Logistics'">
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 6: GURKHA HISTORY 5 (Field Marshal Slim) -->
+            <div class="page page-6-bg accent-gold">
+                <div class="page-inner">
+                    <div class="half-img img-scrim">
+                        <img src="images/image 9.jpeg" class="hist-img" alt="William Slim" onerror="this.src='https://placehold.co/600x800/1a1a1a/cfc8b6?text=Field+Marshal+Slim'">
+                    </div>
+                    <div class="half-text p-fluid relative !bg-transparent">
+                        <div class="eyewear-bg">
+                            <!-- <img src="Glass images/Glass9.jpg" alt="14th Army Heritage Background" onerror="this.src='https://placehold.co/600x800/000000/333333?text=14th+Army+Background'"> -->
+                        </div>
+                        <div class="relative z-10 glass glass-dark p-6 rounded-xl">
+                            <h3 class="book-h3 text-gurkha-gold mb-2">05 / Legendary Respect</h3>
+                            <h2 class="font-serif book-h2 font-bold text-gurkha-ivory mb-3 uppercase">The 14th Army</h2>
+                            <div class="gold-rule-short mb-3"></div>
+                            <p class="book-p mb-3 font-semibold uppercase tracking-[0.2em] text-gurkha-gold">
+                                FEARLESS MINDSET.
+                            </p>
+                            <p class="book-p">
+                                "If a man says he is not afraid of dying, he is either lying or he is a Gurkha." Field Marshal Sir William Slim understood their indomitable spirit. Our legacy is built on this foundation.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- PAGE 7: GURKHA HISTORY 6 (Royal Connection) -->
+            <div class="page page-7-bg accent-wine">
+                <div class="page-inner">
+                     <div class="half-text p-fluid relative !bg-transparent">
+                        <div class="eyewear-bg">
+                            <!-- <img src="Glass images/Glass11.png" alt="Royal Crown Heritage Background" onerror="this.src='https://placehold.co/600x800/000000/333333?text=Royal+Crown+Background'"> -->
+                        </div>
+                        <div class="relative z-10 glass glass-dark p-6 rounded-xl">
+                            <h3 class="book-h3 text-gurkha-gold mb-2">06 / Sovereign Duty</h3>
+                            <h2 class="font-serif book-h2 font-bold text-gurkha-ivory mb-3 uppercase">Crown & Country</h2>
+                            <div class="gold-rule-short mb-3"></div>
+                            <p class="book-p mb-3 font-semibold uppercase tracking-[0.2em] text-gurkha-gold">
+                                HERITAGE FORGED.
+                            </p>
+                            <p class="book-p">
+                                With over two centuries of dedicated service to the British Crown, honored by Royal visits, the Gurkha legacy is one of supreme honor. We carry this regal standard forward.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="half-img img-scrim">
+                        <img src="images/image 11.jpeg" class="hist-img" alt="Royal Connection" onerror="this.src='https://placehold.co/600x800/1a1a1a/cfc8b6?text=Royal+Connection'">
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 8: POSTER IMAGE 1 -->
+            <div class="page page-8-bg accent-steel">
+                <div class="page-inner relative overflow-hidden">
+                    <img src="new images/Elite Clubmaster.jpeg" class="absolute inset-0 h-full w-full object-cover object-center" alt="Elite Clubmaster" onerror="this.src='https://placehold.co/800x1200/111111/d4af37?text=Elite+Clubmaster+Full'">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                    <div class="relative z-10 flex h-full flex-col justify-end p-6 md:p-8">
+                        <div class="glass glass-dark p-6 rounded-xl">
+                            <p class="book-h3 mb-2 uppercase tracking-[0.35em] text-gurkha-gold">Signature Series</p>
+                            <h2 class="font-serif book-h2 font-bold uppercase text-gurkha-ivory mb-3">Elite Clubmaster</h2>
+                            <div class="gold-rule-short mb-3"></div>
+                            <p class="font-semibold uppercase tracking-[0.25em] text-gurkha-gold text-[0.65rem] sm:text-[0.72rem] mb-3">POWER IN EVERY FRAME</p>
+                            <p class="book-p text-[0.65rem] sm:text-xs text-gurkha-ivorydim leading-relaxed drop-shadow-md">
+                                Commanding attention with a distinctive browline architecture. The Elite Clubmaster fuses vintage intellectual authority with tactical-grade durability, featuring hand-polished acetate and shatter-resistant polarized optics.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 9: POSTER IMAGE 2 -->
+            <div class="page page-9-bg accent-gold">
+                <div class="page-inner relative overflow-hidden">
+                    <img src="new images/Signature Wayfarer5.jpeg" class="absolute inset-0 h-full w-full object-cover object-center" alt="Tactical Rectangle" onerror="this.src='https://placehold.co/800x1200/111111/d4af37?text=Tactical+Rectangle+Full'">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                    <div class="relative z-10 flex h-full flex-col justify-end p-6 md:p-8">
+                        <div class="glass glass-dark p-6 rounded-xl">
+                            <p class="book-h3 mb-2 uppercase tracking-[0.35em] text-gurkha-gold">Tactical Series</p>
+                            <h2 class="font-serif book-h2 font-bold uppercase text-gurkha-ivory mb-3">Rectangle Black</h2>
+                            <div class="gold-rule-short mb-3"></div>
+                            <p class="font-semibold uppercase tracking-[0.25em] text-gurkha-gold text-[0.65rem] sm:text-[0.72rem] mb-3">WHERE LEGEND MEETS LUXURY</p>
+                            <p class="book-p text-[0.65rem] sm:text-xs text-gurkha-ivorydim leading-relaxed drop-shadow-md">
+                                Engineered for stealth and speed. The Tactical Rectangle boasts an aerodynamic, matte-black profile that grips securely during high-intensity movement, delivering razor-sharp peripheral clarity and uncompromising UV defense.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 10: POSTER IMAGE 3 -->
+            <div class="page page-10-bg accent-gold">
+                 <div class="page-inner relative overflow-hidden">
+                    <img src="new images/Gurkha Gold Aviator.jpeg" class="absolute inset-0 h-full w-full object-cover object-center" alt="Gold Aviator" onerror="this.src='https://placehold.co/800x1200/111111/d4af37?text=Gold+Aviator+Full'">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                    <div class="relative z-10 flex h-full flex-col justify-end p-6 md:p-8">
+                        <div class="glass glass-dark p-6 rounded-xl">
+                            <p class="book-h3 mb-2 uppercase tracking-[0.35em] text-gurkha-gold">Heritage Series</p>
+                            <h2 class="font-serif book-h2 font-bold uppercase text-gurkha-ivory mb-3">Gold Aviator</h2>
+                            <div class="gold-rule-short mb-3"></div>
+                            <p class="font-semibold uppercase tracking-[0.25em] text-gurkha-gold text-[0.65rem] sm:text-[0.72rem] mb-3">UNMISTAKABLE IN STYLE</p>
+                            <p class="book-p text-[0.65rem] sm:text-xs text-gurkha-ivorydim leading-relaxed drop-shadow-md">
+                                The definitive pilot's silhouette, forged in premium aerospace-grade alloy with subtle gold accents. Designed for high-altitude clarity, these teardrop lenses offer superior glare reduction and timeless military prestige.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 11: POSTER IMAGE 4 -->
+            <div class="page page-11-bg accent-warm">
+                <div class="page-inner relative overflow-hidden">
+                    <img src="new images/Tortoise Wayfarer Elite.jpeg" class="absolute inset-0 h-full w-full object-cover object-center" alt="Tortoise Wayfarer" onerror="this.src='https://placehold.co/800x1200/111111/d4af37?text=Tortoise+Wayfarer+Full'">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                    <div class="relative z-10 flex h-full flex-col justify-end p-6 md:p-8">
+                        <div class="glass glass-dark p-6 rounded-xl">
+                            <p class="book-h3 mb-2 uppercase tracking-[0.35em] text-gurkha-gold">Premium Collection</p>
+                            <h2 class="font-serif book-h2 font-bold uppercase text-gurkha-ivory mb-3">Tortoise Elite</h2>
+                            <div class="gold-rule-short mb-3"></div>
+                            <p class="font-semibold uppercase tracking-[0.25em] text-gurkha-gold text-[0.65rem] sm:text-[0.72rem] mb-3">FEARLESS CONFIDENCE</p>
+                            <p class="book-p text-[0.65rem] sm:text-xs text-gurkha-ivorydim leading-relaxed drop-shadow-md">
+                                A bold statement of power and luxury. Hand-crafted from rich Havana tortoise acetate, the Elite series features reinforced 5-barrel hinges and amber-tinted polarized lenses that drastically enhance contrast and depth perception.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 12: FEATURES & SPECS 1 -->
+            <div class="page page-12-bg accent-gold">
+                <div class="page-inner relative overflow-hidden">
+                    <img src="Glass images/col2.jpeg" class="absolute inset-0 h-full w-full object-cover opacity-30" alt="Lens Tech Engineering Diagram" onerror="this.src='https://placehold.co/800x1200/111111/d4af37?text=Lens+Tech+Diagram'">
+                    <div class="absolute inset-0 bg-[#08140d]/85"></div>
+                    <div class="relative z-10 flex h-full items-center px-6 py-8">
+                        <div class="w-full">
+                            <p class="book-h3 text-gurkha-gold mb-3 uppercase tracking-[0.35em]">ENGINEERING</p>
+                            <h2 class="font-serif book-h2 font-bold text-gurkha-ivory uppercase mb-4">Features & Specs</h2>
+                            <div class="gold-rule-short mb-6"></div>
+
+                            <div class="grid gap-6">
+                                <div class="glass glass-dark glass-tight p-4">
+                                    <p class="font-semibold uppercase tracking-[0.15em] text-gurkha-gold mb-1 text-sm">Polarized Lenses</p>
+                                    <p class="book-p text-xs leading-relaxed">Advanced vertical polarization filter that blocks 99% of reflected glare, providing superior visual clarity and reducing eye strain in high-glare environments.</p>
+                                </div>
+                                <div class="glass glass-dark glass-tight p-4">
+                                    <p class="font-semibold uppercase tracking-[0.15em] text-gurkha-gold mb-1 text-sm">UV400 Protection</p>
+                                    <p class="book-p text-xs leading-relaxed">Comprehensive protection blocking 100% of harmful UVA and UVB rays, ensuring long-term optical health.</p>
+                                </div>
+                                <div class="glass glass-dark glass-tight p-4">
+                                    <p class="font-semibold uppercase tracking-[0.15em] text-gurkha-gold mb-1 text-sm">Anti-Reflective Coating</p>
+                                    <p class="book-p text-xs leading-relaxed">Rear-lens coating that prevents bounce-back glare, sharpening contrast and enhancing color perception.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 13: FEATURES & MATERIALS 2 -->
+            <div class="page page-13-bg accent-steel">
+                <div class="page-inner relative overflow-hidden">
+                    <!-- <img src="images/materials-bg.jpeg" class="absolute inset-0 h-full w-full object-cover opacity-20" alt="Acetate and Titanium Material Close-up" onerror="this.src='https://placehold.co/800x1200/121317/d4af37?text=Premium+Materials+Texture'"> -->
+                    <div class="absolute inset-0 bg-[#121317]/80"></div>
+                    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(212,175,55,0.1),transparent_60%)]"></div>
+                    <div class="relative z-10 flex h-full items-center px-6 py-8">
+                         <div class="w-full">
+                            <p class="book-h3 text-gurkha-gold mb-3 uppercase tracking-[0.35em]">CONSTRUCTION</p>
+                            <h2 class="font-serif book-h2 font-bold text-gurkha-ivory uppercase mb-4">Premium Materials</h2>
+                            <div class="gold-rule-short mb-6"></div>
+
+                            <div class="grid gap-6">
+                                <div class="glass glass-dark glass-tight p-4">
+                                    <p class="font-semibold uppercase tracking-[0.15em] text-gurkha-gold mb-1 text-sm">Pure Acetate Frames</p>
+                                    <p class="book-p text-xs leading-relaxed">Handcrafted from pure cellulose acetate, offering a rich, deep finish, hypoallergenic properties, and a lightweight, custom fit that adapts over time.</p>
+                                </div>
+                                <div class="glass glass-dark glass-tight p-4">
+                                    <p class="font-semibold uppercase tracking-[0.15em] text-gurkha-gold mb-1 text-sm">Medical-Grade Titanium</p>
+                                    <p class="book-p text-xs leading-relaxed">Select models feature ultralight aerospace-grade titanium skeletons. Weighing under 20g, they are practically unbreakable under stress and completely corrosion-resistant.</p>
+                                </div>
+                                <div class="glass glass-dark glass-tight p-4">
+                                    <p class="font-semibold uppercase tracking-[0.15em] text-gurkha-gold mb-1 text-sm">Reinforced Hinges</p>
+                                    <p class="book-p text-xs leading-relaxed">Engineered with durable 5-barrel hinges and screwless interlocking designs (on select metal frames) for a lifetime of rigorous daily deployment.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- PAGE 14: WARRANTY & CARE -->
+            <div class="page page-14-bg accent-wine">
+                <div class="page-inner flex flex-col justify-center px-8 py-10 bg-[#0a1d14] relative overflow-hidden">
+                    <img src="images/warranty-bg.jpeg" class="absolute inset-0 h-full w-full object-cover opacity-20" alt="Premium Sunglass Case and Authenticity Card" onerror="this.src='https://placehold.co/800x1200/0a1d14/d4af37?text=Premium+Hard+Case'">
+                    <div class="absolute inset-0 bg-[#0a1d14]/80"></div>
+                    <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(100% 100% at 50% 0%, rgba(212,175,55,0.08) 0%, transparent 80%);"></div>
+                    
+                    <div class="glass glass-dark p-6 rounded-xl relative z-10 text-center">
+                        <img src="Golden Logo GURKHA.png" class="h-12 mx-auto mix-blend-screen opacity-80 mb-4" alt="Logo" onerror="this.style.display='none'">
+                        <h2 class="font-serif text-xl font-bold text-gurkha-gold uppercase mb-2">The Gurkha Guarantee</h2>
+                        <div class="gold-rule-short mx-auto mb-4"></div>
+                        <p class="book-p text-center text-sm mb-6 text-gurkha-ivory">
+                            Every Gurkha Sunglass is protected with a comprehensive warranty and service promise.
+                        </p>
+
+                        <table class="warranty-table">
+                            <tbody>
+                                <tr>
+                                    <th>Coverage</th>
+                                    <td>1-year limited warranty covering manufacturing defects in frame construction, hinges, and lens coatings from the original purchase date.</td>
+                                </tr>
+                                <tr>
+                                    <th>Authenticity</th>
+                                    <td>Each pair includes an official Gurkha authenticity card, serialized product details, and premium protective hard case.</td>
+                                </tr>
+                                <tr>
+                                    <th>Care Guidelines</th>
+                                    <td>Use only the supplied microfiber cloth, avoid chemical cleaners, wipe lenses gently, and store sunglasses in the hard case when not in use.</td>
+                                </tr>
+                                <tr>
+                                    <th>Exclusions</th>
+                                    <td>Normal wear and tear, scratches, accidental damage, loss/theft, modifications, improper use, and unauthorized repairs are not covered.</td>
+                                </tr>
+                                <tr>
+                                    <th>Claim Process</th>
+                                    <td>Register your purchase at gurkhasunglass.com/warranty or contact support@gurkhasunglass.com with proof of purchase and product details.</td>
+                                </tr>
+                                <tr>
+                                    <th>Service</th>
+                                    <td>Authorized repair or replacement will be provided after inspection. Replacement is offered at Gurkha's discretion when repair is not possible.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <p class="warranty-note">
+                            For full terms, warranty registration, and service requests, please visit the official Gurkha Sunglass website or contact customer support directly.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- PAGE 15: VISUAL STORY (Kartoon) -->
+            <div class="page page-15-bg accent-olive">
+                <div class="page-inner relative flex flex-col items-center justify-center overflow-hidden px-6 py-8">
+                    <div class="relative w-full max-w-[86%] h-[70%] rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.55)] glass glass-dark">
+                        <img src="images/Gurkha Kartoon.jpeg" class="absolute inset-0 w-full h-full object-cover object-center" alt="Gurkha Kartoon" onerror="this.src='https://placehold.co/800x800/1a1a1a/d4af37?text=Gurkha+Illustration'">
+                        <div class="absolute inset-0 bg-black/35"></div>
+                    </div>
+                    <div class="mt-8 w-full max-w-[86%] text-center">
+                        <p class="book-h3 mb-2 uppercase tracking-[0.35em] text-gurkha-gold">GURKHA / VISUAL STORY</p>
+                        <h2 class="font-serif book-h2 font-bold uppercase text-gurkha-ivory">Gurkha</h2>
+                        <div class="gold-rule-short mx-auto mt-2"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 16: OUR OTHER PRODUCTS GALLERY 1 -->
+            <div class="page page-16-bg accent-steel" style="background-color: #f8f9fa;">
+                <div class="page-inner p-6 flex flex-col">
+                    <div class="mb-4">
+                        <p class="book-h3 text-gurkha-gold mb-1 !text-gray-500">Discover More</p>
+                        <h2 class="font-serif book-h2 font-bold text-white-900 uppercase">Our Collection</h2>
+                        <div class="gold-rule-short mt-2"></div>
+                    </div>
+                    
+                    <div class="gallery-grid flex-grow">
+                        <div class="gallery-item">
+                            <img src="new images/Gurkha Titanium Aviator2.jpeg" class="gallery-img" alt="Titanium Aviator" onerror="this.src='https://placehold.co/400x300/ffffff/333333?text=Titanium+Aviator'">
+                            <p class="gallery-title">Titanium Aviator</p>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="new images/Slim Metal Rectangle.jpeg" class="gallery-img" alt="Slim Rectangle" onerror="this.src='https://placehold.co/400x300/ffffff/333333?text=Slim+Rectangle'">
+                            <p class="gallery-title">Slim Rectangle</p>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="new images/Rounded.jpeg" class="gallery-img" alt="Round Classic" onerror="this.src='https://placehold.co/400x300/ffffff/333333?text=Round+Classic'">
+                            <p class="gallery-title">Round Classic</p>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="new images\Office Rectangel.jpeg" class="gallery-img" alt="Classic Pilot" onerror="this.src='https://placehold.co/400x300/ffffff/333333?text=Classic+Pilot'">
+                            <p class="gallery-title">Office Rectangle Light</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 17: OUR OTHER PRODUCTS GALLERY 2 -->
+            <div class="page page-17-bg accent-gold" style="background-color: #f8f9fa;">
+                <div class="page-inner p-6 flex flex-col">
+                    <div class="gallery-grid flex-grow mt-8">
+                        <div class="gallery-item">
+                            <img src="new images/Gurkha Sports Polarized.jpeg" class="gallery-img" alt="Sport Shield" onerror="this.src='https://placehold.co/400x300/ffffff/333333?text=Sport+Shield'">
+                            <p class="gallery-title">Sport Shield</p>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="new images/Transparent.jpeg" class="gallery-img" alt="Browline Classic" onerror="this.src='https://placehold.co/400x300/ffffff/333333?text=Browline+Classic'">
+                            <p class="gallery-title">Gurkha Transparent</p>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="new images/Acetate.jpeg" class="gallery-img" alt="Geometric Hex" onerror="this.src='https://placehold.co/400x300/ffffff/333333?text=Geometric+Hex'">
+                            <p class="gallery-title">Gurkha Acetate</p>
+                        </div>
+                        <div class="gallery-item flex justify-center items-center bg-transparent border-none shadow-none hover:transform-none hover:border-transparent">
+                            <div class="text-center">
+                                <p class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-3">Explore Full Range</p>
+                                <a href="https://gurkhasunglass.com/" target="_blank" class="shop-btn">Shop More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- PAGE 18: TRANSITIONS FINAL -->
+            <div class="page page-18-bg accent-steel">
+                <div class="page-inner relative overflow-hidden">
+                    <div class="absolute inset-0 flex">
+                        <div class="w-1/2 bg-[#f4efe2]"></div>
+                        <div class="w-1/2 bg-[#07080a]"></div>
+                    </div>
+                    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_center,rgba(244,239,226,0.55),transparent_38%)] opacity-80 pointer-events-none"></div>
+                    <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom_center,rgba(0,0,0,0.55),transparent_32%)] opacity-80 pointer-events-none"></div>
+                    <div class="relative z-10 flex h-full flex-col justify-between px-6 py-8 lg:px-12 lg:py-10">
+                        <div class="mx-auto w-full max-w-3xl text-center">
+                            <p class="text-[0.65rem] uppercase tracking-[0.35em] text-gurkha-gold mb-3">OPTICS</p>
+                            <h2 class="font-serif text-[clamp(2rem,4vw,4rem)] font-bold uppercase text-gurkha-ivory leading-tight drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)]">TRANSITIONS</h2>
+                            <p class="mt-4 text-xs uppercase tracking-[0.2em] text-gurkha-ivorydim">INDOORS <span class="mx-2 text-gurkha-gold">•</span> Fade to clear <span class="mx-2 text-gurkha-ivory bg-gurkha-green/90 border border-gurkha-gold/50 px-2 py-1 rounded-full">•</span> OUTDOORS</p>
+                        </div>
+                        <div class="mx-auto w-full max-w-4xl aspect-[4/3] overflow-hidden rounded-[2rem] border border-gurkha-gold/30 bg-[#111] shadow-[0_40px_120px_rgba(0,0,0,0.55)] mt-4">
+                            <img src="new images/Signature Wayfarer3.jpeg" alt="Photochromic Transitions Demo Image" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/800x600/222222/d4af37?text=Photochromic+Transitions'">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- PAGE 19: BLANK/FILLER TO ENSURE 20 PAGES -->
+            <div class="page -hard">
+                 <div class="page-inner p-fluid flex flex-col justify-center items-center text-center bg-gurkha-green relative">
+                    <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(70% 55% at 50% 45%, rgba(212,175,55,0.05) 0%, transparent 70%);"></div>
+                    <!-- Empty inside back cover -->
+                 </div>
+            </div>
+
+            <!-- PAGE 20: BACK COVER (Call to Action) -->
+            <div class="page -hard">
+                <div class="page-inner p-fluid flex flex-col justify-center items-center text-center bg-gurkha-green relative">
+                    <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(70% 55% at 50% 45%, rgba(212,175,55,0.10) 0%, transparent 70%);"></div>
+
+                    <div class="mb-8 w-full flex justify-center relative">
+                        <img src="Golden Logo GURKHA.png" class="w-[80%] mix-blend-screen drop-shadow-2xl" alt="Gurkha Logo" onerror="this.style.display='none'">
+                    </div>
+
+                    <h2 class="font-serif book-h2 font-bold text-white mb-2 uppercase relative">Carry The Legacy</h2>
+                    <p class="book-h3 text-gurkha-gold mb-10 relative">Premium Eyewear Collection</p>
+
+                    <div class="gold-rule-short mb-6"></div>
+                    <p class="text-[0.6rem] text-gurkha-ivorydim uppercase tracking-widest mb-8 pt-2 w-full px-4 leading-loose relative">
+                        Confidence is not worn.<br>It is carried in the way we see the world.
+                    </p>
+
+                    <a href="https://gurkhasunglass.com/" target="_blank" class="inline-block border border-gurkha-gold text-gurkha-gold font-bold font-sans px-8 py-4 uppercase tracking-[0.2em] text-[10px] hover:bg-gurkha-gold hover:text-black transition duration-300 relative">
+                        Visit Gurkha Sunglass
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const loaderText = "Thank you for purchasing Gurkha Sunglass";
+        const typewriterDelay = 80;
+        let loaderCharIndex = 0;
+
+        function typeWriter() {
+            const el = document.getElementById('typewriter');
+            if (!el) return;
+            if (loaderCharIndex < loaderText.length) {
+                el.textContent += loaderText.charAt(loaderCharIndex);
+                loaderCharIndex += 1;
+                setTimeout(typeWriter, typewriterDelay);
+            }
+        }
+
+        function hideLoader(delay = 4500) {
+            const loader = document.getElementById('loader');
+            if (!loader) return;
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 1000);
+            }, delay);
+        }
+
+        window.addEventListener('load', () => {
+            typeWriter();
+            hideLoader(4500);
+            console.log("Lookbook ready.");
+        });
+
+        function createProceduralGreenTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1024;
+            canvas.height = 640; 
+            const ctx = canvas.getContext('2d');
+
+            // Deep luxury green gradient matching the cover
+            const bgGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            bgGradient.addColorStop(0, '#0a1d14'); 
+            bgGradient.addColorStop(0.5, '#06120c');
+            bgGradient.addColorStop(1, '#020504');
+            ctx.fillStyle = bgGradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Subtle paper texture noise
+            ctx.fillStyle = "rgba(255,255,255,0.02)";
+            for(let i=0; i<8000; i++) {
+                ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 1.5, 1.5);
+            }
+
+            // --- LOAD & BLEND THE LOGO ---
+            const logoImg = new Image();
+            logoImg.src = 'main gurkha logo.jpeg';
+            let logoReady = false;
+
+            function drawContent() {
+                // Screen mode removes the black background of the JPEG
+                if (logoReady) {
+                    ctx.save();
+                    ctx.translate(canvas.width / 2, canvas.height / 2 - 20);
+                    ctx.globalCompositeOperation = 'screen';
+                    
+                    const maxW = 500;
+                    const maxH = 250;
+                    let w = logoImg.width;
+                    let h = logoImg.height;
+                    const scale = Math.min(maxW / w, maxH / h, 1);
+                    w *= scale;
+                    h *= scale;
+                    
+                    ctx.drawImage(logoImg, -w / 2, -h / 2, w, h);
+                    ctx.restore();
+                } else {
+                    // Fallback Text if image fails
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.font = "900 85px Cinzel, serif";
+                    ctx.fillStyle = "#d4af37";
+                    ctx.fillText("GURKHA", canvas.width/2, canvas.height/2);
+                }
+
+                // SUBTITLE
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.font = "600 20px Inter, sans-serif";
+                ctx.fillStyle = "#d4af37";
+                ctx.letterSpacing = "10px";
+                ctx.fillText("P R E M I U M   E Y E W E A R", canvas.width/2, canvas.height/2 + 120);
+            }
+
+            logoImg.onload = function() {
+                logoReady = true;
+                drawContent();
+                if (typeof texture !== 'undefined') texture.needsUpdate = true;
+            };
+
+            drawContent();
+
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.anisotropy = 16;
+            return texture;
+        }
+
+        let isCardClicked = false;
+        let cardMesh;
+
+        function init3D() {
+            const container = document.getElementById('canvas-container');
+            const scene = new THREE.Scene();
+            
+            const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = window.innerWidth < 768 ? 8.5 : 6;
+
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.1;
+            container.appendChild(renderer.domElement);
+
+            const cardTexture = createProceduralGreenTexture();
+            const geometry = new THREE.BoxGeometry(3.4, 2.15, 0.04); 
+            
+            // The Green Card Material
+            const material = new THREE.MeshStandardMaterial({ 
+                map: cardTexture,
+                color: 0xffffff, 
+                metalness: 0.2,  
+                roughness: 0.4   
+            });
+
+            const edgeMaterial = new THREE.MeshStandardMaterial({
+                color: 0xd4af37, metalness: 0.9, roughness: 0.2
+            });
+            const materials = [edgeMaterial, edgeMaterial, edgeMaterial, edgeMaterial, material, material];
+
+            cardMesh = new THREE.Mesh(geometry, materials);
+            cardMesh.rotation.x = 0.2;
+            cardMesh.rotation.y = -0.3;
+            scene.add(cardMesh);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+            scene.add(ambientLight);
+            
+            const mainLight = new THREE.DirectionalLight(0xffffff, 1.0); 
+            mainLight.position.set(2, 3, 5); 
+            scene.add(mainLight);
+
+            const rimLight = new THREE.DirectionalLight(0xd4af37, 1.5);
+            rimLight.position.set(-5, -2, -2);
+            scene.add(rimLight);
+
+            let time = 0;
+            let targetRotationX = 0;
+            let targetRotationY = 0;
+            let mouseX = 0;
+            let mouseY = 0;
+
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                if (!isCardClicked) {
+                    time += 0.005;
+                    cardMesh.position.y = Math.sin(time * 2) * 0.1; 
+                    
+                    targetRotationY = Math.sin(time) * 0.25 + (mouseX * 0.3);
+                    targetRotationX = Math.cos(time * 1.2) * 0.15 + (mouseY * 0.3);
+                    
+                    cardMesh.rotation.y += (targetRotationY - cardMesh.rotation.y) * 0.05;
+                    cardMesh.rotation.x += (targetRotationX - cardMesh.rotation.x) * 0.05;
+                } else {
+                    cardMesh.rotation.y += (0 - cardMesh.rotation.y) * 0.08;
+                    cardMesh.rotation.x += (0 - cardMesh.rotation.x) * 0.08;
+                    camera.position.z += (2.5 - camera.position.z) * 0.05;
+                }
+
+                renderer.render(scene, camera);
+            }
+
+            document.addEventListener('mousemove', (event) => {
+                if(!isCardClicked) {
+                    mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+                    mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+                }
+            });
+
+            document.addEventListener('touchmove', (event) => {
+                if(!isCardClicked && event.touches.length > 0) {
+                    mouseX = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
+                    mouseY = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
+                }
+            });
+
+            animate();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.position.z = window.innerWidth < 768 ? 8.5 : 6;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        init3D();
+
+        let flipbookInitialized = false;
+
+        document.getElementById('canvas-container').addEventListener('click', function() {
+            if (isCardClicked) return;
+            isCardClicked = true;
+
+            document.querySelector('.tap-to-open').style.opacity = '0';
+            this.style.opacity = '0';
+            this.style.pointerEvents = 'none';
+            
+            setTimeout(() => {
+                this.style.display = 'none';
+                
+                const flipbookWrapper = document.getElementById('flipbook-wrapper');
+                flipbookWrapper.style.pointerEvents = 'auto';
+                flipbookWrapper.style.opacity = '1';
+                
+                if (!flipbookInitialized) {
+                    initFlipbook();
+                    flipbookInitialized = true;
+                }
+            }, 1200); 
+        });
+
+        function initFlipbook() {
+            const isMobile = window.innerWidth < 768;
+            
+            const pageFlip = new St.PageFlip(document.getElementById("book"), {
+                width: isMobile ? 320 : 450, 
+                height: isMobile ? 480 : 600,
+                size: "stretch",
+                minWidth: 280,
+                maxWidth: 600,
+                minHeight: 400,
+                maxHeight: 850,
+                maxShadowOpacity: 0.6, 
+                showCover: true, 
+                mobileScrollSupport: false,
+                usePortrait: true,
+                flippingTime: 800,
+                useMouseEvents: true,
+                disableFlipByClick: false
+            });
+
+            pageFlip.loadFromHTML(document.querySelectorAll(".page"));
+        }
+    </script>
+</body>
+</html>
