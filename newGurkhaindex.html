@@ -172,42 +172,48 @@
         .gold-rule { height: 1px; width: 100%; background: linear-gradient(90deg, transparent 0%, rgba(212,175,55,0.55) 20%, rgba(212,175,55,0.9) 50%, rgba(212,175,55,0.55) 80%, transparent 100%); }
         .gold-rule-short { height: 1px; width: 60px; background: linear-gradient(90deg, var(--g-gold), rgba(212,175,55,0)); }
 
-        .warranty-table {
+        /* ================= STRICT GRID TABLE (LIKE UPLOADED IMAGE) ================= */
+        .grid-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 1rem;
-            color: #f4efe2;
-            min-width: 100%;
+            margin-top: 0.75rem;
+            color: var(--g-ivory-dim);
+            font-size: 0.55rem;
+            line-height: 1.3;
         }
-        .warranty-table th,
-        .warranty-table td {
-            padding: 0.9rem 0.8rem;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+        .grid-table th, .grid-table td {
+            border: 1px solid rgba(212,175,55,0.35); /* Gurkha Gold borders */
+            padding: 6px 4px;
+            text-align: center;
+            vertical-align: middle;
         }
-        .warranty-table th {
-            font-size: 0.72rem;
+        .grid-table th {
+            color: var(--g-gold);
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.15em;
-            color: #d4af37;
-            vertical-align: top;
-            width: 32%;
-            padding-top: 1rem;
+            letter-spacing: 0.1em;
+            background: rgba(0, 0, 0, 0.4);
+            font-size: 0.5rem;
         }
-        .warranty-table td {
-            font-size: 0.75rem;
-            line-height: 1.6;
-            color: #cfc8b6;
+        .grid-table td.desc-cell {
+            text-align: left;
+            font-size: 0.55rem;
+            padding-left: 8px;
         }
-        .warranty-table tr:last-child td {
-            border-bottom: none;
+        .grid-table strong {
+            color: var(--g-ivory);
+            font-size: 0.65rem;
         }
-
-        .warranty-note {
+        
+        .table-section-title {
+            color: var(--g-gold);
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
             margin-top: 1rem;
-            font-size: 0.68rem;
-            color: rgba(255,255,255,0.65);
-            line-height: 1.65;
+            margin-bottom: 0.25rem;
+            text-align: left;
         }
 
         /* Gold accent text with subtle shimmer */
@@ -501,7 +507,7 @@
             <!-- PAGE 8: POSTER IMAGE 1 -->
             <div class="page page-8-bg accent-steel">
                 <div class="page-inner relative overflow-hidden">
-                    <img src="new images/Elite Clubmaster.jpeg" class="absolute inset-0 h-full w-full object-cover object-center" alt="Elite Clubmaster" onerror="this.src='https://placehold.co/800x1200/111111/d4af37?text=Elite+Clubmaster+Full'">
+                    <img src="poster/ELITE CLUBMASTER.jpeg" class="absolute inset-0 h-full w-full object-cover object-center" alt="Elite Clubmaster" onerror="this.src='https://placehold.co/800x1200/111111/d4af37?text=Elite+Clubmaster+Full'">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
                     <div class="relative z-10 flex h-full flex-col justify-end p-6 md:p-8">
                         <div class="glass glass-dark p-6 rounded-xl">
@@ -539,7 +545,7 @@
             <!-- PAGE 10: POSTER IMAGE 3 -->
             <div class="page page-10-bg accent-gold">
                  <div class="page-inner relative overflow-hidden">
-                    <img src="new images/Gurkha Gold Aviator.jpeg" class="absolute inset-0 h-full w-full object-cover object-center" alt="Gold Aviator" onerror="this.src='https://placehold.co/800x1200/111111/d4af37?text=Gold+Aviator+Full'">
+                    <img src="poster/GURKHA GOLD AVAITOR.jpeg" class="absolute inset-0 h-full w-full object-cover object-center" alt="Gold Aviator" onerror="this.src='https://placehold.co/800x1200/111111/d4af37?text=Gold+Aviator+Full'">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
                     <div class="relative z-10 flex h-full flex-col justify-end p-6 md:p-8">
                         <div class="glass glass-dark p-6 rounded-xl">
@@ -558,7 +564,7 @@
             <!-- PAGE 11: POSTER IMAGE 4 -->
             <div class="page page-11-bg accent-warm">
                 <div class="page-inner relative overflow-hidden">
-                    <img src="new images/Tortoise Wayfarer Elite.jpeg" class="absolute inset-0 h-full w-full object-cover object-center" alt="Tortoise Wayfarer" onerror="this.src='https://placehold.co/800x1200/111111/d4af37?text=Tortoise+Wayfarer+Full'">
+                    <img src="poster/TORTOISE WAYFARER ELITE.jpeg" class="absolute inset-0 h-full w-full object-cover object-center" alt="Tortoise Wayfarer" onerror="this.src='https://placehold.co/800x1200/111111/d4af37?text=Tortoise+Wayfarer+Full'">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
                     <div class="relative z-10 flex h-full flex-col justify-end p-6 md:p-8">
                         <div class="glass glass-dark p-6 rounded-xl">
@@ -577,7 +583,7 @@
             <!-- PAGE 12: FEATURES & SPECS 1 -->
             <div class="page page-12-bg accent-gold">
                 <div class="page-inner relative overflow-hidden">
-                    <img src="Glass images/col2.jpeg" class="absolute inset-0 h-full w-full object-cover opacity-30" alt="Lens Tech Engineering Diagram" onerror="this.src='https://placehold.co/800x1200/111111/d4af37?text=Lens+Tech+Diagram'">
+                    <img src="poster/collection2.jpeg" class="absolute inset-0 h-full w-full object-cover opacity-30" alt="Lens Tech Engineering Diagram" onerror="this.src='https://placehold.co/800x1200/111111/d4af37?text=Lens+Tech+Diagram'">
                     <div class="absolute inset-0 bg-[#08140d]/85"></div>
                     <div class="relative z-10 flex h-full items-center px-6 py-8">
                         <div class="w-full">
@@ -607,7 +613,7 @@
             <!-- PAGE 13: FEATURES & MATERIALS 2 -->
             <div class="page page-13-bg accent-steel">
                 <div class="page-inner relative overflow-hidden">
-                    <!-- <img src="images/materials-bg.jpeg" class="absolute inset-0 h-full w-full object-cover opacity-20" alt="Acetate and Titanium Material Close-up" onerror="this.src='https://placehold.co/800x1200/121317/d4af37?text=Premium+Materials+Texture'"> -->
+                    <img src="poster/GURKHA TITANIUM AVAITOR.jpeg" class="absolute inset-0 h-full w-full object-cover opacity-20" alt="Acetate and Titanium Material Close-up" onerror="this.src='https://placehold.co/800x1200/121317/d4af37?text=Premium+Materials+Texture'">
                     <div class="absolute inset-0 bg-[#121317]/80"></div>
                     <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(212,175,55,0.1),transparent_60%)]"></div>
                     <div class="relative z-10 flex h-full items-center px-6 py-8">
@@ -635,53 +641,80 @@
                 </div>
             </div>
             
-            <!-- PAGE 14: WARRANTY & CARE -->
+            <!-- PAGE 14: WARRANTY & LENS CATEGORY -->
             <div class="page page-14-bg accent-wine">
-                <div class="page-inner flex flex-col justify-center px-8 py-10 bg-[#0a1d14] relative overflow-hidden">
+                <div class="page-inner flex flex-col justify-center px-6 py-6 bg-[#0a1d14] relative overflow-hidden">
                     <img src="images/warranty-bg.jpeg" class="absolute inset-0 h-full w-full object-cover opacity-20" alt="Premium Sunglass Case and Authenticity Card" onerror="this.src='https://placehold.co/800x1200/0a1d14/d4af37?text=Premium+Hard+Case'">
-                    <div class="absolute inset-0 bg-[#0a1d14]/80"></div>
-                    <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(100% 100% at 50% 0%, rgba(212,175,55,0.08) 0%, transparent 80%);"></div>
+                    <div class="absolute inset-0 bg-[#0a1d14]/85"></div>
                     
-                    <div class="glass glass-dark p-6 rounded-xl relative z-10 text-center">
-                        <img src="Golden Logo GURKHA.png" class="h-12 mx-auto mix-blend-screen opacity-80 mb-4" alt="Logo" onerror="this.style.display='none'">
-                        <h2 class="font-serif text-xl font-bold text-gurkha-gold uppercase mb-2">The Gurkha Guarantee</h2>
-                        <div class="gold-rule-short mx-auto mb-4"></div>
-                        <p class="book-p text-center text-sm mb-6 text-gurkha-ivory">
-                            Every Gurkha Sunglass is protected with a comprehensive warranty and service promise.
-                        </p>
-
-                        <table class="warranty-table">
+                    <div class="glass glass-dark p-5 rounded-xl relative z-10 w-full">
+                        <img src="Golden Logo GURKHA.png" class="h-8 mx-auto mix-blend-screen opacity-80 mb-2" alt="Logo" onerror="this.style.display='none'">
+                        <h2 class="font-serif text-[1rem] font-bold text-gurkha-gold uppercase mb-1 text-center">Technical & Warranty</h2>
+                        <div class="gold-rule-short mx-auto mb-2"></div>
+                        
+                        <!-- Filter Category Table (From Uploaded Image) -->
+                        <div class="table-section-title">Filter Category (ISO 12312-1)</div>
+                        <table class="grid-table">
+                            <thead>
+                                <tr>
+                                    <th>Cat.</th>
+                                    <th>Transmittance</th>
+                                    <th>Tone</th>
+                                    <th>Description & Use</th>
+                                </tr>
+                            </thead>
                             <tbody>
                                 <tr>
-                                    <th>Coverage</th>
-                                    <td>1-year limited warranty covering manufacturing defects in frame construction, hinges, and lens coatings from the original purchase date.</td>
+                                    <td><strong>4</strong></td>
+                                    <td>3% - 8%</td>
+                                    <td>Very Dark</td>
+                                    <td class="desc-cell">Very high protection against extreme sun radiation (sea, snow, desert). <strong>Not suitable for driving.</strong></td>
                                 </tr>
                                 <tr>
-                                    <th>Authenticity</th>
-                                    <td>Each pair includes an official Gurkha authenticity card, serialized product details, and premium protective hard case.</td>
+                                    <td><strong>3</strong></td>
+                                    <td>8% - 18%</td>
+                                    <td>Dark</td>
+                                    <td class="desc-cell">High protection against sunglare. General purpose use.</td>
                                 </tr>
                                 <tr>
-                                    <th>Care Guidelines</th>
-                                    <td>Use only the supplied microfiber cloth, avoid chemical cleaners, wipe lenses gently, and store sunglasses in the hard case when not in use.</td>
+                                    <td><strong>2</strong></td>
+                                    <td>18% - 43%</td>
+                                    <td>Medium</td>
+                                    <td class="desc-cell">Good protection against sunglare.</td>
                                 </tr>
                                 <tr>
-                                    <th>Exclusions</th>
-                                    <td>Normal wear and tear, scratches, accidental damage, loss/theft, modifications, improper use, and unauthorized repairs are not covered.</td>
+                                    <td><strong>1</strong></td>
+                                    <td>43% - 80%</td>
+                                    <td>Light</td>
+                                    <td class="desc-cell">Limited reduction of sunglare. Cosmetic use.</td>
                                 </tr>
                                 <tr>
-                                    <th>Claim Process</th>
-                                    <td>Register your purchase at gurkhasunglass.com/warranty or contact support@gurkhasunglass.com with proof of purchase and product details.</td>
-                                </tr>
-                                <tr>
-                                    <th>Service</th>
-                                    <td>Authorized repair or replacement will be provided after inspection. Replacement is offered at Gurkha's discretion when repair is not possible.</td>
+                                    <td><strong>0</strong></td>
+                                    <td>80% - 100%</td>
+                                    <td>Very Light</td>
+                                    <td class="desc-cell">Very limited reduction of sunglare.</td>
                                 </tr>
                             </tbody>
                         </table>
 
-                        <p class="warranty-note">
-                            For full terms, warranty registration, and service requests, please visit the official Gurkha Sunglass website or contact customer support directly.
-                        </p>
+                        <!-- Warranty Table in matching grid format -->
+                        <div class="table-section-title mt-4">The Gurkha Guarantee</div>
+                        <table class="grid-table">
+                            <tbody>
+                                <tr>
+                                    <th style="width: 25%;">Coverage</th>
+                                    <td class="desc-cell">1-year limited warranty covering manufacturing defects in frames and lenses.</td>
+                                </tr>
+                                <tr>
+                                    <th>Exclusions</th>
+                                    <td class="desc-cell">Normal wear, scratches, accidental damage, and unauthorized repairs.</td>
+                                </tr>
+                                <tr>
+                                    <th>Care</th>
+                                    <td class="desc-cell">Use only the supplied microfiber cloth. Store in hard case. Avoid chemicals.</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -689,9 +722,9 @@
             <!-- PAGE 15: VISUAL STORY (Kartoon) -->
             <div class="page page-15-bg accent-olive">
                 <div class="page-inner relative flex flex-col items-center justify-center overflow-hidden px-6 py-8">
-                    <div class="relative w-full max-w-[86%] h-[70%] rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.55)] glass glass-dark">
-                        <img src="images/Gurkha Kartoon.jpeg" class="absolute inset-0 w-full h-full object-cover object-center" alt="Gurkha Kartoon" onerror="this.src='https://placehold.co/800x800/1a1a1a/d4af37?text=Gurkha+Illustration'">
-                        <div class="absolute inset-0 bg-black/35"></div>
+                    <div class="relative w-full max-w-[86%] h-[63%] rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.55)] glass glass-dark bg-black/90">
+                        <img src="poster/center gurkha.jpeg" class="absolute inset-0 w-full h-full object-contain object-center" alt="Gurkha Kartoon" onerror="this.src='https://placehold.co/800x800/1a1a1a/d4af37?text=Gurkha+Illustration'">
+                        <div class="absolute inset-0 bg-black/20"></div>
                     </div>
                     <div class="mt-8 w-full max-w-[86%] text-center">
                         <p class="book-h3 mb-2 uppercase tracking-[0.35em] text-gurkha-gold">GURKHA / VISUAL STORY</p>
